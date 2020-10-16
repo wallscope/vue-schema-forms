@@ -37,6 +37,9 @@
         ) Click me to change the field value
     pre {{ JSON.stringify(ex2, null, ' ') }}
   hr
+  h2 Example form with css overrides
+  h2 Example form with nested forms
+  //- Use v-slot:fields to create the fake 'fields' type and render it using another FormBuilder component
 </template>
 
 <script>
