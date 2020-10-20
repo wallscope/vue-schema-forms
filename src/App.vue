@@ -45,67 +45,69 @@
 <script>
 import FormBuilder from "./components/FormBuilder.vue";
 
-const example = [
-  {
-    name: "string field",
-    type: "string",
-    required: true,
-    description: "A plain text string field",
-    default: "",
-  },
-  {
-    name: "password field",
-    type: "password",
-    required: true,
-    description: "A password field",
-    default: "supersafepassword",
-  },
-  {
+// const example = [
+//   {
+//     name: "string field",
+//     type: "string",
+//     required: true,
+//     description: "A plain text string field",
+//     default: "",
+//   },
+//   {
+//     name: "password field",
+//     type: "password",
+//     required: true,
+//     description: "A password field",
+//     default: "supersafepassword",
+//   },
+//   {
+//     name: "mapping",
+//     type: "mapping",
+//     required: true,
+//     size: "2+",
+//     description: "Object that represents a mapping of string to string",
+//     default: '{"label":"http://www.w3.org/2000/01/rdf-schema#label"}',
+//   },
+//   {
+//     name: "matchers",
+//     type: "triple-pattern",
+//     required: false,
+//     size: "1+",
+//     description: "Triple patterns that will match",
+//     default: '[{"p":"http://www.w3.org/2000/01/rdf-schema#label"}]',
+//   },
+//   {
+//     name: "is-it",
+//     type: "boolean",
+//     required: false,
+//     description: "If set to true, it is. If set to false, it is not.",
+//     default: "false",
+//   },
+//   {
+//     name: "timeout",
+//     type: "number",
+//     required: false,
+//     description:
+//       "Timeout for the request sent to the Endpoint. Measured in Milliseconds",
+//     default: "15000",
+//   },
+//   {
+//     name: "query",
+//     type: "sparql-query",
+//     required: true,
+//     size: "1",
+//     description: "SPARQL Query example",
+//     default: "",
+//   },
+// ];
+const example = [{
     name: "mapping",
     type: "mapping",
     required: true,
+    size: "2+",
     description: "Object that represents a mapping of string to string",
     default: '{"label":"http://www.w3.org/2000/01/rdf-schema#label"}',
-  },
-  {
-    name: "matchers",
-    type: "triple-pattern",
-    required: false,
-    description:
-      "RDF triple matchers is an array of objects containing the 3 contituents of a triple, s, p ,o.",
-    default: '[{"s":"*", "p":"*", "o":"*"}]',
-  },
-  {
-    name: "sink",
-    type: "boolean",
-    required: false,
-    description:
-      "If set to true, triples that match this ingredient will not be passed down the pipeline, effectively sinking the triple",
-    default: "false",
-  },
-  {
-    name: "timeout",
-    type: "number",
-    required: false,
-    description:
-      "Timeout for the request sent to the Endpoint. If it is exceeded the request is cancelled. Measured in Milliseconds",
-    default: "15000",
-  },
-  {
-    name: "query",
-    type: "sparql-query",
-    required: true,
-    description: "SPARQL Query example",
-    default: "",
-  },
-  {
-    name: "non-existant",
-    type: "whatever",
-    required: true,
-    description: "A field for which the type is not registered",
-    default: "",
-  },
-];
+  }]
 export default {
   name: "App",
   components: {
@@ -136,7 +138,8 @@ export default {
 .field {
   display: flex;
 }
-table, td {
+table,
+td {
   padding: 2px;
   border: 1px solid black;
 }

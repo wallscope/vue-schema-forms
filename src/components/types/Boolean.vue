@@ -9,6 +9,7 @@ export default {
   props: {
     value: { type: Boolean },
     default: { type: String },
+    size: { type: Object },
   },
   data() {
     return {

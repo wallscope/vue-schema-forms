@@ -10,8 +10,9 @@
 <script>
 export default {
   props: {
-    value: { type: String },
+    value: { type: [String, Array] },
     default: { type: String, default: () => "" },
+    size: { type: Object },
   },
   data() {
     return {

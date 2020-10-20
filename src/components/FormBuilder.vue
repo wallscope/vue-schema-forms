@@ -1,6 +1,6 @@
 <template lang="pug">
 .builder
-  template(v-for="f in fields")
+  template(v-for="f in processedFields")
     slot(:name="f.type", v-bind:field="f", v-bind:input="input")
       p {{ f.name }} - {{ f.description }}
       .field
@@ -9,6 +9,7 @@
           @input="input(f.name, $event)",
           :value="inner[f.name]",
           :default="f.default",
+          :size="f.size",
           v-bind="getProps(f)"
         )
   slot(name="submit")
@@ -19,6 +20,22 @@
 import Vue from "vue";
 import { components, defaultField } from "@/components/types";
 
+const sizeRegex = /(\d*)([+-])?/;
+function parseSize(s) {
+  if (!s) return { min: 1, max: 1 };
+  let [match, num, sign] = s.match(sizeRegex);
+  if (!match) return { min: 1, max: 1 };
+  let size = Number(num);
+  size = size <= 0 ? 1 : size;
+  switch (sign) {
+    case "+":
+      return { min: size, max: Infinity };
+    case "-":
+      return { min: 1, max: size };
+    default:
+      return { min: size, max: size };
+  }
+}
 // TODO: Write spec
 export default {
   name: "FormBuilder",
@@ -32,6 +49,13 @@ export default {
     return {
       inner: { ...this.value },
     };
+  },
+  computed: {
+    processedFields() {
+      return this.fields.map((f) => {
+        return { ...f, size: parseSize(f.size) };
+      });
+    },
   },
   methods: {
     submit() {

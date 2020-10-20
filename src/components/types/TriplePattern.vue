@@ -19,7 +19,8 @@ import Vue from "vue";
 
 export default {
   props: {
-    value: { type: Array, default: () => [{ s: "", p: "", o: "" }] },
+    value: { type: [Object, Array], default: () => ({ s: "", p: "", o: "" }) },
+    size: { type: Object },
   },
   data() {
     return {

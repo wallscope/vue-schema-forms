@@ -8,8 +8,9 @@ input(
 <script>
 export default {
   props: {
-    value: { type: String },
-    default: { type: String, default:() => "" },
+    value: { type: [String, Array] },
+    default: { type: String, default: () => "" },
+    size: { type: Object },
   },
   data() {
     return {
