@@ -20,6 +20,7 @@ export default {
     value: { type: [Object, Array], default: () => ({ s: "", p: "", o: "" }) },
     default: { type: String, default: () => "{}" },
     size: { type: Object },
+    validateFn: {type: Function}
   },
   data() {
     let v = this.value
@@ -53,7 +54,27 @@ export default {
       }else{
         this.$emit("input", this.innerValue[0]);
       }
-    }
+    },
+    validate() {
+      const component = this;
+      return this.innerValue.map((v, i) => {
+        try {
+          if(typeof this.validateFn === 'function'){
+            return this.validateFn(v,component);
+          }else{
+            if(v.s){ new URL(v.s) }
+            if(v.p){ new URL(v.s) }
+            if(v.o && v.o.startsWith("<") && v.o.endsWith(">")){ 
+              new URL(v.s) 
+            }
+            return true;
+          }
+        } catch (e) {
+          this.$emit('error',{message:e.message, index:i});
+          return false;
+        }
+      });
+    },
   }
 };
 </script>

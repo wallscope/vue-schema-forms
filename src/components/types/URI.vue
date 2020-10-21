@@ -1,13 +1,8 @@
 <template lang="pug">
-.sparql-query
+.string
   template(v-for="f, idx in innerValue")
     .field
-      codemirror(
-        :ref="'editor-' + idx",
-        @input="input(idx, $event)",
-        :value="f",
-        :options="opts"
-      )
+      input(type="text", @input="input(idx,$event)", :value="f")
       button.delete(
         v-if="size.min < innerValue.length",
         @click="eliminate(idx)"
@@ -16,22 +11,12 @@
 </template>
 <script>
 import Vue from "vue";
-import { codemirror } from "vue-codemirror";
-import { translate } from "sparqlalgebrajs";
-// require styles
-import "codemirror/lib/codemirror.css";
-import "codemirror/theme/monokai.css";
-import "codemirror/mode/sparql/sparql"; // explicit import of language mode required for webpack v4+
-
 export default {
-  components: {
-    codemirror,
-  },
   props: {
     value: { type: [String, Array] },
     default: { type: String, default: () => "" },
     size: { type: Object },
-    validateFn: { type: Function },
+    validateFn: {type: Function}
   },
   data() {
     let v = this.value;
@@ -44,19 +29,12 @@ export default {
       v.push("");
     }
     return {
-      opts: {
-        tabSize: 2,
-        mode: "application/sparql-query",
-        theme: "monokai",
-        lineNumbers: true,
-        line: true,
-      },
       innerValue: v,
     };
   },
   methods: {
     input(idx, e) {
-      Vue.set(this.innerValue, idx, e);
+      Vue.set(this.innerValue, idx, e.target.value);
       this.emit();
     },
     eliminate(idx) {
@@ -78,19 +56,13 @@ export default {
       return this.innerValue.map((v, i) => {
         try {
           if(typeof this.validateFn === 'function'){
-            this.validateFn(v, component);
-          }else{
-            translate(v);
-            return true;
+            return this.validateFn(v,component);
           }
+          new URL(v)
+          return true
         } catch (e) {
-          const editor = this.$refs[`editor-${i}`].find((x) => !!x);
-          editor.cminstance.addLineClass(e.hash.loc.first_line-1, 'background', 'code-error')
-          setTimeout(([err])=>{
-            editor.cminstance.removeLineClass(err.hash.loc.first_line-1, 'background', 'code-error')
-          },1000,[e])
-          this.$emit('error',{message:e.message,index:i})
-          return false;
+          this.$emit('error',{message:e.message, index:i})
+          return false
         }
       });
     },
@@ -98,7 +70,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.sparql-query {
+.string {
   .field {
     display: grid;
     grid-template-columns: 3fr 1fr;
@@ -109,13 +81,5 @@ export default {
       border: 2px solid #ff7777;
     }
   }
-}
-</style>
-<style>
-.sparql-query .CodeMirror-linebackground {
-  transition: 500ms;
-}
-.code-error {
-  background-color: rgba(254, 112, 112, 0.38);
 }
 </style>

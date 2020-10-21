@@ -16,6 +16,7 @@ export default {
     value: { type: [String, Array] },
     default: { type: String, default: () => "" },
     size: { type: Object },
+    validateFn: {type: Function}
   },
   data() {
     let v = this.value;
@@ -49,6 +50,20 @@ export default {
       } else {
         this.$emit("input", this.innerValue[0]);
       }
+    },
+    validate() {
+      const component = this;
+      return this.innerValue.map((v, i) => {
+        try {
+          if(typeof this.validateFn === 'function'){
+            return this.validateFn(v,component);
+          }
+          return true
+        } catch (e) {
+          this.$emit('error',{message:e.message, index:i})
+          return false
+        }
+      });
     },
   },
 };

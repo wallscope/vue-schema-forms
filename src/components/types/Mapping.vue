@@ -18,6 +18,7 @@ export default {
     value: { type: Object, default: () => ({}) },
     default: { type: String, default: () => "{}" },
     size: { type: Object },
+    validateFn: {type: Function}
   },
   data() {
     let v = Object.entries(this.value)
@@ -47,7 +48,21 @@ export default {
     emit() {
       const clean = this.innerValue.filter((x) => x[0] && x[1]);
       this.$emit("input", Object.fromEntries(clean));
-    }
+    },
+    validate() {
+      const component = this;
+      return this.innerValue.map((v, i) => {
+        try {
+          if(typeof this.validateFn === 'function'){
+            return this.validateFn(v,component);
+          }
+          return true;
+        } catch (e) {
+          this.$emit('error',{message:e.message, index:i})
+          return false;
+        }
+      });
+    },
   },
 };
 </script>

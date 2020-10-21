@@ -5,8 +5,10 @@
       p {{ f.name }} - {{ f.description }}
       .field
         component(
+          :ref="f.name",
           :is="getComponent(f)",
           @input="input(f.name, $event)",
+          @error="error(f.name, $event)",
           :value="inner[f.name]",
           :default="f.default",
           :size="f.size",
@@ -42,6 +44,7 @@ export default {
   props: {
     fields: { type: Array, required: true },
     value: { type: Object, default: () => ({}) },
+    requireValidation: { type: Boolean, default: () => true },
     overrides: { type: Object, default: () => ({}) },
     fieldProps: { type: Object, default: () => ({}) },
   },
@@ -59,11 +62,23 @@ export default {
   },
   methods: {
     submit() {
+      // The nested iteration is because Vue seems to wrap refs in an Array.
+      // I guess in case there's multiple refs with the same name
+      const allFields = this.fields.flatMap((f) => {
+        const results = this.$refs[f.name].flatMap((r) => r.validate());
+        return results;
+      });
+      // Early return if not all fields pass and validation is required
+      if(this.requireValidation && allFields.some(x => !x)) return;
+      // emit value as submit if they all pass
       this.$emit("submit", this.inner);
     },
     input(field, value) {
       Vue.set(this.inner, field, value);
       this.$emit("input", this.inner);
+    },
+    error(field, evt) {
+      this.$emit("error", { field, error: evt });
     },
     getComponent(p) {
       return this.overrides[p.type] || components[p.type] || defaultField;

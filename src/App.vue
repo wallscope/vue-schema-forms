@@ -51,8 +51,8 @@ const example = [
   {
     name: "trips",
     type: "triple-pattern",
-    required: true,
-    size: "2-",
+    required: false,
+    size: "1+",
     description: "Object that represents a mapping of string to string",
     default: '{"p":"http://www.w3.org/2000/01/rdf-schema#label"}',
   },
