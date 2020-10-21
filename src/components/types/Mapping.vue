@@ -1,5 +1,5 @@
 <template lang="pug">
-.wrapper
+.mapping
   .header
     p Key
     p Value
@@ -7,8 +7,8 @@
     .field
       input(type="text", @input="input(key, 0, $event)", :value="innerValue[key][0]")
       input(type="text", @input="input(key, 1, $event)", :value="innerValue[key][1]")
-      p.delete(@click="eliminate(key)") Delete
-  button(v-if="this.size.max > this.innerValue.length",@click="addField") Add field
+      button.delete(v-if="size.min < innerValue.length", @click="eliminate(key)") Delete
+  button(v-if="size.max > innerValue.length",@click="addField") Add field
 </template>
 <script>
 import Vue from "vue";
@@ -47,16 +47,18 @@ export default {
     emit() {
       const clean = this.innerValue.filter((x) => x[0] && x[1]);
       this.$emit("input", Object.fromEntries(clean));
-    },
+    }
   },
 };
 </script>
 <style lang="scss" scoped>
-.wrapper {
-  .field {
-    display: flex;
-    flex-direction: row;
-    p.delete {
+.mapping {
+  .header, .field {
+    display: grid;
+    grid-template-columns: 3fr 3fr 1fr ;
+    margin: 5px 0;
+    column-gap: 20px;
+    .delete {
       color: #ff7777;
       border: 2px solid #ff7777;
     }

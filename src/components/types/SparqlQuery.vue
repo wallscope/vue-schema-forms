@@ -1,8 +1,16 @@
 <template lang="pug">
-.wrapper
-  codemirror(@input="input", :value="value", :options="opts")
+.sparql-query
+  template(v-for="f, idx in innerValue")
+    .field
+      codemirror( @input="input(idx,$event)", :value="f", :options="opts")
+      button.delete(
+        v-if="size.min < innerValue.length",
+        @click="eliminate(idx)"
+      ) Delete
+  button(v-if="size.max > innerValue.length", @click="addField") Add field
 </template>
 <script>
+import Vue from "vue";
 import { codemirror } from "vue-codemirror";
 // require styles
 import "codemirror/lib/codemirror.css";
@@ -14,13 +22,20 @@ export default {
     codemirror,
   },
   props: {
-    value: {
-      type: [String, Array],
-      size: { type: Object },
-      default: () => "CONSTRUCT {?s ?p ?o} WHERE {?s ?p ?o}",
-    },
+    value: { type: [String, Array] },
+    default: { type: String, default: () => "" },
+    size: { type: Object },
   },
   data() {
+    let v = this.value;
+    if (!this.value || (Array.isArray(this.value) && !this.value.length)) {
+      v = this.default;
+    }
+    v = Array.isArray(v) ? v : [v];
+    const end = Math.max(v.length, this.size.min);
+    while (v.length < end) {
+      v.push("");
+    }
     return {
       opts: {
         tabSize: 2,
@@ -29,17 +44,42 @@ export default {
         lineNumbers: true,
         line: true,
       },
+      innerValue: v,
     };
   },
   methods: {
-    input(evt) {
-      this.$emit("input", evt);
+    input(idx, e) {
+      Vue.set(this.innerValue, idx, e);
+      this.emit();
+    },
+    eliminate(idx) {
+      Vue.delete(this.innerValue, idx);
+      this.emit();
+    },
+    addField() {
+      this.innerValue.push("");
+    },
+    emit() {
+      if (this.size.max > 1) {
+        this.$emit("input", this.innerValue);
+      } else {
+        this.$emit("input", this.innerValue[0]);
+      }
     },
   },
 };
 </script>
 <style lang="scss" scoped>
-.wrapper {
-  margin-left: 10px;
+.sparql-query {
+  .field {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    margin: 5px 0;
+    column-gap: 20px;
+    .delete {
+      color: #ff7777;
+      border: 2px solid #ff7777;
+    }
+  }
 }
 </style>

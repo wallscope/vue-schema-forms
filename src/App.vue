@@ -7,12 +7,14 @@
       th name
       th type
       th required
+      th size
       th description
       th default
     tr(v-for="f in example")
       td {{ f.name }}
       td {{ f.type }}
       td {{ f.required }}
+      td {{ f.size }}
       td {{ f.description }}
       td {{ f.default }}
   .ex
@@ -100,14 +102,64 @@ import FormBuilder from "./components/FormBuilder.vue";
 //     default: "",
 //   },
 // ];
-const example = [{
+const example = [
+  {
+    name: "trips",
+    type: "triple-pattern",
+    required: true,
+    size: "2-",
+    description: "Object that represents a mapping of string to string",
+    default: '{"p":"http://www.w3.org/2000/01/rdf-schema#label"}',
+  },
+  {
     name: "mapping",
     type: "mapping",
     required: true,
-    size: "2+",
+    size: "2-",
     description: "Object that represents a mapping of string to string",
     default: '{"label":"http://www.w3.org/2000/01/rdf-schema#label"}',
-  }]
+  },
+  {
+    name: "string field",
+    type: "string",
+    required: true,
+    size: "2+",
+    description: "A plain text string field",
+    default: "",
+  },
+  {
+    name: "number field",
+    type: "number",
+    required: true,
+    size: "2+",
+    description: "A number field",
+    default: "",
+  },
+  {
+    name: "boolean field",
+    type: "boolean",
+    required: true,
+    size: "2+",
+    description: "A number field",
+    default: "",
+  },
+  {
+    name: "password field",
+    type: "password",
+    required: true,
+    size: "2+",
+    description: "A password field",
+    default: "",
+  },
+  {
+    name: "SPARQL query field",
+    type: "sparql-query",
+    required: true,
+    size: "1+",
+    description: "A sparql query field",
+    default: "CONSTRUCT {?S ?P ?O}WHERE{?S ?P ?O}",
+  },
+];
 export default {
   name: "App",
   components: {

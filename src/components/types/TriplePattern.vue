@@ -1,18 +1,16 @@
 <template lang="pug">
-.wrapper
-  .triple(v-for="t, idx in innerValue")
+.triple-pattern
+  .header
+    p Subject
+    p Predicate
+    p Object
+  template(v-for="t, idx in innerValue")
     .field
-      p Subject
       input(type="text", @input="input(idx, 's', $event)")
-    .field
-      p Predicate
       input(type="text", @input="input(idx, 'p', $event)")
-    .field
-      p Object
       input(type="text", @input="input(idx, 'o', $event)")
-    .cross(@click="eliminate(idx)")
-      p Delete
-  button(@click="addField") Add field
+      button.delete(v-if="size.min < innerValue.length", @click="eliminate(idx)") Delete
+  button(v-if="size.max > innerValue.length", @click="addField") Add field
 </template>
 <script>
 import Vue from "vue";
@@ -20,34 +18,56 @@ import Vue from "vue";
 export default {
   props: {
     value: { type: [Object, Array], default: () => ({ s: "", p: "", o: "" }) },
+    default: { type: String, default: () => "{}" },
     size: { type: Object },
   },
   data() {
+    let v = this.value
+    if (!this.value || !Object.keys(this.value).length) {
+      v = JSON.parse(this.default);
+    }
+    v = Array.isArray(v) ? v : [v];
+    const end = Math.max(v.length, this.size.min);
+    while (v.length < end) {
+      v.push({ s: "", p: "", o: "" });
+    }
     return {
-      innerValue: this.value || [],
+      innerValue: v,
     };
   },
   methods: {
     input(idx, field, e) {
       Vue.set(this.innerValue[idx], field, e.target.value);
-      this.$emit("input", this.innerValue);
+      this.emit();
     },
     addField() {
       this.innerValue.push({ s: "", p: "", o: "" });
     },
     eliminate(idx) {
       Vue.delete(this.innerValue, idx);
-      this.$emit("input", this.innerValue);
+      this.emit()
     },
-  },
+    emit(){
+      if(this.size.max > 1){
+        this.$emit("input", this.innerValue);
+      }else{
+        this.$emit("input", this.innerValue[0]);
+      }
+    }
+  }
 };
 </script>
 <style lang="scss" scoped>
-.wrapper {
-  .triple {
-    display: flex;
-    flex-direction: row;
+.triple-pattern {
+  .header, .field {
+    display: grid;
+    grid-template-columns: 3fr 3fr 3fr 1fr ;
+    margin: 5px 0;
+    column-gap: 20px;
+    .delete {
+      color: #ff7777;
+      border: 2px solid #ff7777;
+    }
   }
-  margin-left: 10px;
 }
 </style>
