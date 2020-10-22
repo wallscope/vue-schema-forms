@@ -24,17 +24,17 @@
 
   h2 The normal form
   .ex
-    FormBuilder(:fields="example", @input="input", v-model="ex1", @error="addErr(0,$event)")
+    FormBuilder(:fields="example", @input="input", v-model="ex1", @error="addErr(1,$event)", @submit="submit")
     div
       p Errors
-      p.error(v-for="i, e in errors[0]", @click="deleteErr(0,i)") {{ e }}
+       p.error(v-for="e, i in errors1", @click="deleteErr(1,i)") {{ e.field }}:{{e.error.index}} -> {{e.error.message}}
       pre {{ JSON.stringify(ex1, null, ' ') }}
   hr
 
   h2 Example form with slot override
   p Replacing 'string' types with a div with red background
   .ex
-    FormBuilder(:fields="example", @input="input", v-model="ex2", @error="addErr(1,$event)")
+    FormBuilder(:fields="example", @input="input", v-model="ex2", @error="addErr(2,$event)", @submit="submit")
       template(v-slot:string="slotProps")
         div(
           style="background:red;",
@@ -42,7 +42,7 @@
         ) Click me to change the field value
     div
       p Errors
-      p.error(v-for="i, e in errors[1]", @click="deleteErr(1,i)") {{ e }}
+      p.error(v-for="e, i in errors2", @click="deleteErr(2,i)") {{ e.field }}:{{e.error.index}} -> {{e.error.message}}
       pre {{ JSON.stringify(ex1, null, ' ') }}
   hr
   h2 Example form with css overrides
@@ -121,7 +121,8 @@ export default {
       example,
       ex1: {},
       ex2: {},
-      errors: {},
+      errors1: [],
+      errors2: [],
     };
   },
   methods: {
@@ -129,12 +130,14 @@ export default {
       console.log(evt);
     },
     addErr(example, e) {
-      this.errors[example] = this.errors[example] || [];
-      this.errors[example].push(e);
+      this[`errors${example}`].push(e);
     },
     deleteErr(example, i) {
-      Vue.delete(this.errors[example], i);
+      Vue.delete(this[`errors${example}`], i);
     },
+    submit(evt){
+      alert(`submitted without errors:\n${JSON.stringify(evt,null,'  ')}`)
+    }
   },
 };
 </script>

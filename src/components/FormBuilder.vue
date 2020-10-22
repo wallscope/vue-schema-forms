@@ -69,7 +69,9 @@ export default {
         return results;
       });
       // Early return if not all fields pass and validation is required
-      if(this.requireValidation && allFields.some(x => !x)) return;
+      if(this.requireValidation && allFields.some(x => !x)) {
+        return;
+      }
       // emit value as submit if they all pass
       this.$emit("submit", this.inner);
     },

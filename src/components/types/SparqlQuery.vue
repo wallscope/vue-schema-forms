@@ -100,8 +100,8 @@ export default {
       });
       if(this.required && results.every(v => v === false)){
         this.$emit("error", { message: "This field is required", index: null });
-        return results;
       }
+      return results;
     },
   },
 };
