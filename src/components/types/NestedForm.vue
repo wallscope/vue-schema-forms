@@ -58,3 +58,8 @@ export default {
   },
 };
 </script>
+<style scoped>
+.form {
+  margin-left: 10px;
+}
+</style>
