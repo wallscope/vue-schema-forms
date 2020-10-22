@@ -6,6 +6,7 @@ import Sparql from './SparqlQuery.vue';
 import Password from './Password.vue';
 import TriplePattern from './TriplePattern.vue';
 import Mapping from './Mapping.vue';
+import NestedForm from './NestedForm.vue';
 
 export const components = {
   password: Password,
@@ -15,6 +16,7 @@ export const components = {
   ['sparql-query']: Sparql,
   ['triple-pattern']: TriplePattern,
   mapping: Mapping,
+  form: NestedForm,
 };
 
 export const defaultField = Vue.component("default", {

@@ -1,10 +1,21 @@
 <template lang="pug">
 .builder
   template(v-for="f in processedFields")
-    slot(:name="f.type", v-bind:field="f", v-bind:input="input")
+    slot(
+      :name="f.type", 
+      :field="f", 
+      :input="input",
+      :default="f.default",
+      :value="inner[f.name]", 
+      :submit="submit",
+      :size="f.size",
+      :error="error",
+      v-bind="getProps(f)"
+    )
       p {{ f.name }} - {{ f.description }}
       .field
         component(
+          :field="f",
           :ref="f.name",
           :is="getComponent(f)",
           @input="input(f.name, $event)",
@@ -20,7 +31,7 @@
 
 <script>
 import Vue from "vue";
-import { components, defaultField } from "@/components/types";
+import { components, defaultField } from "./types";
 
 const sizeRegex = /(\d*)([+-])?/;
 function parseSize(s) {
@@ -46,6 +57,7 @@ export default {
     value: { type: Object, default: () => ({}) },
     requireValidation: { type: Boolean, default: () => true },
     overrides: { type: Object, default: () => ({}) },
+    validate: {type: Object, default: () => ({}) },
     fieldProps: { type: Object, default: () => ({}) },
   },
   data() {

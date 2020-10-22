@@ -24,30 +24,42 @@
 
   h2 The normal form
   .ex
-    FormBuilder(:fields="example", @input="input", v-model="ex1", @error="addErr(1,$event)", @submit="submit")
+    FormBuilder(
+      :fields="example",
+      @input="input",
+      v-model="ex1",
+      @error="addErr(1, $event)",
+      @submit="submit"
+    )
     div
       p Errors
-       p.error(v-for="e, i in errors1", @click="deleteErr(1,i)") {{ e.field }}:{{e.error.index}} -> {{e.error.message}}
+        p.error(v-for="e, i in errors1", @click="deleteErr(1, i)") {{ e.field }}:{{ e.error.index }} -- {{ e.error.message }}
       pre {{ JSON.stringify(ex1, null, ' ') }}
   hr
 
   h2 Example form with slot override
   p Replacing 'string' types with a div with red background
   .ex
-    FormBuilder(:fields="example", @input="input", v-model="ex2", @error="addErr(2,$event)", @submit="submit")
+    FormBuilder(:fields="example", @input="input", v-model="ex2", @error="addErr(2, $event)", @submit="submit")
       template(v-slot:string="slotProps")
-        div(
-          style="background:red;",
-          @click="slotProps.input(slotProps.field.name, 'hardcoded change')"
-        ) Click me to change the field value
+        div(style="background:red;", @click="slotProps.input(slotProps.field.name, 'hardcoded change')") Click me to change the field value
     div
       p Errors
-      p.error(v-for="e, i in errors2", @click="deleteErr(2,i)") {{ e.field }}:{{e.error.index}} -> {{e.error.message}}
+      p.error(v-for="e, i in errors2", @click="deleteErr(2, i)") {{ e.field }}:{{ e.error.index }} -- {{ e.error.message }}
       pre {{ JSON.stringify(ex1, null, ' ') }}
   hr
+
   h2 Example form with css overrides
+
   h2 Example form with nested forms
-  //- Use v-slot:fields to create the fake 'fields' type and render it using another FormBuilder component
+  p By using the v-slot:form we are matching the non-existent type 'form' as declared in the nested fields array
+  p This is not backed by the current spec version but is a workaround for nested forms.
+  .ex
+    FormBuilder(:fields="nested", @input="input", v-model="ex3", @error="addErr(2, $event)", @submit="submit") 
+    div
+      p Errors
+      p.error(v-for="e, i in errors3", @click="deleteErr(3, i)") {{ e.field }}:{{ e.error.index }} -- {{ e.error.message }}
+      pre {{ JSON.stringify(ex3, null, ' ') }}
 </template>
 
 <script>
@@ -118,11 +130,30 @@ export default {
   },
   data() {
     return {
+      nested: [
+        {
+          name: "Normal String Field",
+          type: "string",
+          size: "2+",
+          description: "A simple field in a nested form",
+          default: "",
+        },
+        {
+          name: "Form",
+          type: "form",
+          required: false,
+          size: "1",
+          description: "This is a nested form",
+          fields: example,
+        },
+      ],
       example,
       ex1: {},
       ex2: {},
+      ex3: {},
       errors1: [],
       errors2: [],
+      errors3: [],
     };
   },
   methods: {
@@ -135,9 +166,9 @@ export default {
     deleteErr(example, i) {
       Vue.delete(this[`errors${example}`], i);
     },
-    submit(evt){
-      alert(`submitted without errors:\n${JSON.stringify(evt,null,'  ')}`)
-    }
+    submit(evt) {
+      alert(`submitted without errors:\n${JSON.stringify(evt, null, "  ")}`);
+    },
   },
 };
 </script>
