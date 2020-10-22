@@ -26,11 +26,12 @@ export default {
     let v = this.value
     if (!this.value || !Object.keys(this.value).length) {
       v = JSON.parse(this.default);
+      Vue.nextTick(()=> this.emit())
     }
     v = Array.isArray(v) ? v : [v];
     const end = Math.max(v.length, this.size.min);
     while (v.length < end) {
-      v.push({ s: "", p: "", o: "" });
+      v.push(JSON.parse(this.default));
     }
     return {
       innerValue: v,
@@ -56,6 +57,10 @@ export default {
       }
     },
     validate() {
+      if (this.required && Object.entries(this.innerValue).every(([t]) => t.s === '' && t.p === '' && t.o === '')) {
+        this.$emit("error", { message: "This field is required", index: null });
+        return [false];
+      }
       const component = this;
       return this.innerValue.map((v, i) => {
         try {

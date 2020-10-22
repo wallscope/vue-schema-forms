@@ -24,20 +24,26 @@
 
   h2 The normal form
   .ex
-    FormBuilder(:fields="example", @input="input", v-model="ex1")
-    pre {{ JSON.stringify(ex1, null, ' ') }}
+    FormBuilder(:fields="example", @input="input", v-model="ex1", @error="addErr(0,$event)")
+    div
+      p Errors
+      p.error(v-for="i, e in errors[0]", @click="deleteErr(0,i)") {{ e }}
+      pre {{ JSON.stringify(ex1, null, ' ') }}
   hr
 
   h2 Example form with slot override
   p Replacing 'string' types with a div with red background
   .ex
-    FormBuilder(:fields="example", @input="input", v-model="ex2")
+    FormBuilder(:fields="example", @input="input", v-model="ex2", @error="addErr(1,$event)")
       template(v-slot:string="slotProps")
         div(
           style="background:red;",
           @click="slotProps.input(slotProps.field.name, 'hardcoded change')"
         ) Click me to change the field value
-    pre {{ JSON.stringify(ex2, null, ' ') }}
+    div
+      p Errors
+      p.error(v-for="i, e in errors[1]", @click="deleteErr(1,i)") {{ e }}
+      pre {{ JSON.stringify(ex1, null, ' ') }}
   hr
   h2 Example form with css overrides
   h2 Example form with nested forms
@@ -45,6 +51,7 @@
 </template>
 
 <script>
+import Vue from "vue";
 import FormBuilder from "./components/FormBuilder.vue";
 
 const example = [
@@ -78,7 +85,7 @@ const example = [
     required: true,
     size: "2+",
     description: "A number field",
-    default: "",
+    default: "2",
   },
   {
     name: "boolean field",
@@ -86,7 +93,7 @@ const example = [
     required: true,
     size: "2+",
     description: "A number field",
-    default: "",
+    default: "true",
   },
   {
     name: "password field",
@@ -94,7 +101,6 @@ const example = [
     required: true,
     size: "2+",
     description: "A password field",
-    default: "",
   },
   {
     name: "SPARQL query field",
@@ -115,11 +121,19 @@ export default {
       example,
       ex1: {},
       ex2: {},
+      errors: {},
     };
   },
   methods: {
     input(evt) {
       console.log(evt);
+    },
+    addErr(example, e) {
+      this.errors[example] = this.errors[example] || [];
+      this.errors[example].push(e);
+    },
+    deleteErr(example, i) {
+      Vue.delete(this.errors[example], i);
     },
   },
 };

@@ -2,9 +2,10 @@
 .boolean
   template(v-for="f, idx in innerValue")
     .field
-      select(:value="f", @input="input(idx, $event)")
-        option(:value="true") True
-        option(:value="false") False
+      select(:value="''+f", @input="input(idx, $event)")
+        option(disabled, value="") -- SELECT --
+        option(value="true") True
+        option(value="false") False
       button.delete(
         v-if="size.min < innerValue.length",
         @click="eliminate(idx)"
@@ -15,7 +16,7 @@
 import Vue from "vue";
 export default {
   props: {
-    value: { type: [Number, Array] },
+    value: { type: [Boolean, Array] },
     default: { type: String, default: () => "" },
     size: { type: Object },
     validateFn: {type: Function}
@@ -24,12 +25,13 @@ export default {
     let v = this.value;
     if (!this.value || (Array.isArray(this.value) && !this.value.length)) {
       v = this.default;
+      Vue.nextTick(()=> this.emit())
     }
     v = Array.isArray(v) ? v : [v];
-    v = v.map((x) => x === "true");
+    v = v.map((x) => ''+x);
     const end = Math.max(v.length, this.size.min);
     while (v.length < end) {
-      v.push(false);
+      v.push(''+this.default);
     }
     return {
       innerValue: v,
@@ -37,7 +39,14 @@ export default {
   },
   methods: {
     input(idx, e) {
-      Vue.set(this.innerValue, idx, e.target.value === "true");
+      switch(e.target.value){
+        case "true":
+          Vue.set(this.innerValue, idx, true);
+          break;
+        case "false":
+          Vue.set(this.innerValue, idx, false);
+          break;
+      }
       this.emit();
     },
     eliminate(idx) {
@@ -49,12 +58,16 @@ export default {
     },
     emit() {
       if (this.size.max > 1) {
-        this.$emit("input", this.innerValue);
+        this.$emit("input", this.innerValue.filter(x => x !== ''));
       } else {
-        this.$emit("input", this.innerValue[0]);
+        this.$emit("input", this.innerValue.filter(x => x !== '')[0]);
       }
     },
     validate() {
+      if (this.required && this.innerValue.filter(x => x !== '').length < 1 ) {
+        this.$emit("error", { message: "This field is required", index: null });
+        return [false];
+      }
       const component = this;
       return this.innerValue.map((v, i) => {
         try {

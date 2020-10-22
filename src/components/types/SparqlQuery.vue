@@ -37,13 +37,15 @@ export default {
     let v = this.value;
     if (!this.value || (Array.isArray(this.value) && !this.value.length)) {
       v = this.default;
+      Vue.nextTick(()=> this.emit())
     }
     v = Array.isArray(v) ? v : [v];
     const end = Math.max(v.length, this.size.min);
     while (v.length < end) {
-      v.push("");
+      v.push(this.default);
     }
     return {
+      sparqlTranslate: translate,
       opts: {
         tabSize: 2,
         mode: "application/sparql-query",
@@ -75,15 +77,18 @@ export default {
     },
     validate() {
       const component = this;
-      return this.innerValue.map((v, i) => {
+      const results = this.innerValue.map((v, i) => {
         try {
           if(typeof this.validateFn === 'function'){
             this.validateFn(v, component);
           }else{
-            translate(v);
+            this.sparqlTranslate(v);
             return true;
           }
         } catch (e) {
+          if(e.message.indexOf("Translate only works on complete query or update objects") > -1){
+            return false;
+          }
           const editor = this.$refs[`editor-${i}`].find((x) => !!x);
           editor.cminstance.addLineClass(e.hash.loc.first_line-1, 'background', 'code-error')
           setTimeout(([err])=>{
@@ -93,6 +98,10 @@ export default {
           return false;
         }
       });
+      if(this.required && results.every(v => v === false)){
+        this.$emit("error", { message: "This field is required", index: null });
+        return results;
+      }
     },
   },
 };

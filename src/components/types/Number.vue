@@ -22,12 +22,13 @@ export default {
     let v = this.value;
     if (!this.value || (Array.isArray(this.value) && !this.value.length)) {
       v = this.default;
+      Vue.nextTick(()=> this.emit())
     }
     v = Array.isArray(v) ? v : [v];
     v = v.map(x => Number(x))
     const end = Math.max(v.length, this.size.min);
     while (v.length < end) {
-      v.push(0);
+      v.push(Number(this.default));
     }
     return {
       innerValue: v,
@@ -53,6 +54,10 @@ export default {
       }
     },
     validate() {
+      if (this.required && (this.innerValue.length < 1 || this.innerValue.every((n) => isNaN(Number(n))))) {
+        this.$emit("error", { message: "This field is required", index: null });
+        return [false];
+      }
       const component = this;
       return this.innerValue.map((v, i) => {
         try {

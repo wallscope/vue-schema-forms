@@ -24,6 +24,7 @@ export default {
     let v = Object.entries(this.value)
     if(!v.length){
      v = Object.entries(JSON.parse(this.default))
+     Vue.nextTick(()=> this.emit())
     }
     const end = Math.max(v.length,this.size.min)
     while(v.length < end){
@@ -50,6 +51,10 @@ export default {
       this.$emit("input", Object.fromEntries(clean));
     },
     validate() {
+      if (this.required && Object.entries(this.innerValue).every(([k,v]) => k === '' && v === '')) {
+        this.$emit("error", { message: "This field is required", index: null });
+        return [false];
+      }
       const component = this;
       return this.innerValue.map((v, i) => {
         try {
