@@ -21,7 +21,6 @@ export default {
     field: { type: Object },
     value: { type: Object },
     default: { type: String, default: () => "{}" },
-    size: { type: Object },
     validateFn: { type: Function },
   },
   data() {

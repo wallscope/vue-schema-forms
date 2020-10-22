@@ -15,6 +15,7 @@ const unixRegex = /^\/$|(^(?=\/)|^\.|^\.\.)(\/(?=[^/\0])[^/\0]+)*\/?$/
 
 export default {
   props: {
+    field: { type: Object },
     value: { type: [String, Array] },
     default: { type: String, default: () => "" },
     size: { type: Object },

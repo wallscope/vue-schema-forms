@@ -28,6 +28,7 @@ export default {
     codemirror,
   },
   props: {
+    field: { type: Object },
     value: { type: [String, Array] },
     default: { type: String, default: () => "" },
     size: { type: Object },

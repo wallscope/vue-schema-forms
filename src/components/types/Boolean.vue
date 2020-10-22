@@ -16,6 +16,7 @@
 import Vue from "vue";
 export default {
   props: {
+    field: { type: Object },
     value: { type: [Boolean, Array] },
     default: { type: String, default: () => "" },
     size: { type: Object },
