@@ -50,16 +50,25 @@
   hr
 
   h2 Example form with css overrides
+  p Overriding css in children components is achieved using the special ::v-deep combinator in scss
+  .ex.override
+    FormBuilder(:fields="example", @input="input", v-model="ex3", @error="addErr(3, $event)", @submit="submit")
+    div
+      p Errors
+      p.error(v-for="e, i in errors3", @click="deleteErr(3, i)") {{ e.field }}:{{ e.error.index }} -- {{ e.error.message }}
+      pre {{ JSON.stringify(ex3, null, ' ') }}
+  hr
 
   h2 Example form with nested forms
   p By using the v-slot:form we are matching the non-existent type 'form' as declared in the nested fields array
   p This is not backed by the current spec version but is a workaround for nested forms.
   .ex
-    FormBuilder(:fields="nested", @input="input", v-model="ex3", @error="addErr(2, $event)", @submit="submit") 
+    FormBuilder(:fields="nested", @input="input", v-model="ex4", @error="addErr(4, $event)", @submit="submit") 
     div
       p Errors
-      p.error(v-for="e, i in errors3", @click="deleteErr(3, i)") {{ e.field }}:{{ e.error.index }} -- {{ e.error.message }}
-      pre {{ JSON.stringify(ex3, null, ' ') }}
+      p.error(v-for="e, i in errors4", @click="deleteErr(4, i)") {{ e.field }}:{{ e.error.index }} -- {{ e.error.message }}
+      pre {{ JSON.stringify(ex4, null, ' ') }}
+  hr
 </template>
 
 <script>
@@ -151,9 +160,11 @@ export default {
       ex1: {},
       ex2: {},
       ex3: {},
+      ex4: {},
       errors1: [],
       errors2: [],
       errors3: [],
+      errors4: [],
     };
   },
   methods: {
@@ -187,5 +198,9 @@ table,
 td {
   padding: 2px;
   border: 1px solid black;
+}
+
+.override ::v-deep .string {
+    background-color: aqua;
 }
 </style>
