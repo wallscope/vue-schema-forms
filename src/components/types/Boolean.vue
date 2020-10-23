@@ -39,6 +39,16 @@ export default {
     };
   },
   methods: {
+    coerce(str) {
+      switch (str) {
+        case "true":
+          return true;
+        case "false":
+          return false;
+        default:
+          return undefined;
+      }
+    },
     input(idx, e) {
       switch(e.target.value){
         case "true":
@@ -59,9 +69,9 @@ export default {
     },
     emit() {
       if (this.size.max > 1) {
-        this.$emit("input", this.innerValue.filter(x => x !== ''));
+        this.$emit("input", this.innerValue.filter(x => x !== '').map(x => this.coerce(x)));
       } else {
-        this.$emit("input", this.innerValue.filter(x => x !== '')[0]);
+        this.$emit("input", this.innerValue.filter(x => x !== '').map(x => this.coerce(x))[0]);
       }
     },
     validate() {
