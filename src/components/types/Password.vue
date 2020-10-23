@@ -1,5 +1,5 @@
 <template lang="pug">
-.string
+.password
   template(v-for="f, idx in innerValue")
     .field
       input(:type="show[idx]?'text':'password'", @input="input(idx,$event)", :value="f")
