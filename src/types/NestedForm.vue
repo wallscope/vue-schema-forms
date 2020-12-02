@@ -1,22 +1,27 @@
 <template lang="pug">
-.form
-  FormBuilder(
-    ref="nested",
-    @input="input",
-    :value="innerValue",
-    @error="error",
-    :fields="field.fields"
-  )
-    template(v-slot:submit)
-      //- Empty div to hide inner submit since Vue doesn't allow empty slots
-      div
+  .form
+    vue-walls-forms(
+      ref="nested",
+      @input="input",
+      :value="innerValue",
+      @error="error",
+      :fields="field.fields"
+    )
+      //- this slot makes the package not compile
+      //- template(v-slot:submit)
+        //- Empty div to hide inner submit since Vue doesn't allow empty slots
+        //- div
 </template>
+
 <script>
 import Vue from "vue";
 export default {
+  name: "NestedForm",
   // Need a dynamic import here to prevent circular references:
   // https://vuejs.org/v2/guide/components-edge-cases.html#Circular-References-Between-Components
-  components: { FormBuilder: () => import("../../components/FormBuilder.vue") },
+  components: {
+    VueWallsForms: () => import("../vue-walls-forms.vue"),
+  },
   props: {
     field: { type: Object },
     value: { type: Object },
@@ -57,6 +62,7 @@ export default {
   },
 };
 </script>
+
 <style scoped>
 .form {
   margin-left: 10px;

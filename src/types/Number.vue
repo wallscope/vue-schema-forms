@@ -1,8 +1,8 @@
 <template lang="pug">
-.string
+.number
   template(v-for="f, idx in innerValue")
     .field
-      input(type="text", @input="input(idx,$event)", :value="f")
+      input(type="number", @input="input(idx,$event)", :value="f")
       button.delete(
         v-if="size.min < innerValue.length",
         @click="eliminate(idx)"
@@ -10,25 +10,26 @@
   button(v-if="size.max > innerValue.length", @click="addField") Add field
 </template>
 <script>
-import Vue from "vue";
+import Vue from 'vue';
 export default {
   props: {
     field: { type: Object },
-    value: { type: [String, Array] },
-    default: { type: String, default: () => "" },
+    value: { type: [Number, Array] },
+    default: { type: String, default: () => '' },
     size: { type: Object },
-    validateFn: {type: Function}
+    validateFn: { type: Function },
   },
   data() {
     let v = this.value;
     if (!this.value || (Array.isArray(this.value) && !this.value.length)) {
       v = this.default;
-      Vue.nextTick(()=> this.emit())
+      Vue.nextTick(() => this.emit());
     }
     v = Array.isArray(v) ? v : [v];
+    v = v.map((x) => Number(x));
     const end = Math.max(v.length, this.size.min);
     while (v.length < end) {
-      v.push(this.default);
+      v.push(Number(this.default));
     }
     return {
       innerValue: v,
@@ -36,7 +37,7 @@ export default {
   },
   methods: {
     input(idx, e) {
-      Vue.set(this.innerValue, idx, e.target.value);
+      Vue.set(this.innerValue, idx, Number(e.target.value));
       this.emit();
     },
     eliminate(idx) {
@@ -44,31 +45,33 @@ export default {
       this.emit();
     },
     addField() {
-      this.innerValue.push("");
+      this.innerValue.push(0);
     },
     emit() {
       if (this.size.max > 1) {
-        this.$emit("input", this.innerValue);
+        this.$emit('input', this.innerValue);
       } else {
-        this.$emit("input", this.innerValue[0]);
+        this.$emit('input', this.innerValue[0]);
       }
     },
     validate() {
-      if (this.required && this.innerValue.every((x) => x === "")) {
-        this.$emit("error", { message: "This field is required", index: null });
+      if (
+        this.required &&
+        (this.innerValue.length < 1 || this.innerValue.every((n) => isNaN(Number(n))))
+      ) {
+        this.$emit('error', { message: 'This field is required', index: null });
         return [false];
       }
       const component = this;
       return this.innerValue.map((v, i) => {
         try {
-          if(typeof this.validateFn === 'function'){
-            return this.validateFn(v,component);
+          if (typeof this.validateFn === 'function') {
+            return this.validateFn(v, component);
           }
-          new URL(v)
-          return true
+          return true;
         } catch (e) {
-          this.$emit('error',{message:e.message, index:i})
-          return false
+          this.$emit('error', { message: e.message, index: i });
+          return false;
         }
       });
     },
@@ -76,7 +79,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.string {
+.number {
   .field {
     display: grid;
     grid-template-columns: 3fr 1fr;

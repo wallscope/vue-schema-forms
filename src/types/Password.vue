@@ -1,8 +1,9 @@
 <template lang="pug">
-.string
+.password
   template(v-for="f, idx in innerValue")
     .field
-      input(type="text", @input="input(idx, $event)", :value="f")
+      input(:type="show[idx]?'text':'password'", @input="input(idx,$event)", :value="f")
+      button(@click="toggle(idx)") Show/Hide
       button.delete(
         v-if="size.min < innerValue.length",
         @click="eliminate(idx)"
@@ -10,12 +11,12 @@
   button(v-if="size.max > innerValue.length", @click="addField") Add field
 </template>
 <script>
-import Vue from "vue";
+import Vue from 'vue';
 export default {
   props: {
     field: { type: Object },
     value: { type: [String, Array] },
-    default: { type: String, default: () => "" },
+    default: { type: String, default: () => '' },
     size: { type: Object },
     validateFn: { type: Function },
   },
@@ -23,7 +24,7 @@ export default {
     let v = this.value;
     if (!this.value || (Array.isArray(this.value) && !this.value.length)) {
       v = this.default;
-      Vue.nextTick(()=> this.emit())
+      Vue.nextTick(() => this.emit());
     }
     v = Array.isArray(v) ? v : [v];
     const end = Math.max(v.length, this.size.min);
@@ -32,9 +33,13 @@ export default {
     }
     return {
       innerValue: v,
+      show: {},
     };
   },
   methods: {
+    toggle(idx) {
+      Vue.set(this.show, idx, !this.show[idx]);
+    },
     input(idx, e) {
       Vue.set(this.innerValue, idx, e.target.value);
       this.emit();
@@ -44,29 +49,29 @@ export default {
       this.emit();
     },
     addField() {
-      this.innerValue.push("");
+      this.innerValue.push('');
     },
     emit() {
       if (this.size.max > 1) {
-        this.$emit("input", this.innerValue);
+        this.$emit('input', this.innerValue);
       } else {
-        this.$emit("input", this.innerValue[0]);
+        this.$emit('input', this.innerValue[0]);
       }
     },
     validate() {
-      if (this.required && this.innerValue.every((x) => x === "")) {
-        this.$emit("error", { message: "This field is required", index: null });
+      if (this.required && this.innerValue.every((x) => x === '')) {
+        this.$emit('error', { message: 'This field is required', index: null });
         return [false];
       }
       const component = this;
       return this.innerValue.map((v, i) => {
         try {
-          if (typeof this.validateFn === "function") {
+          if (typeof this.validateFn === 'function') {
             return this.validateFn(v, component);
           }
           return true;
         } catch (e) {
-          this.$emit("error", { message: e.message, index: i });
+          this.$emit('error', { message: e.message, index: i });
           return false;
         }
       });
@@ -78,7 +83,7 @@ export default {
 .string {
   .field {
     display: grid;
-    grid-template-columns: 3fr 1fr;
+    grid-template-columns: 3fr 1fr 1fr;
     margin: 5px 0;
     column-gap: 20px;
     .delete {

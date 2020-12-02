@@ -1,24 +1,17 @@
-# form-builder
+# Vue Walls Forms
 
-## Project setup
-```
-yarn install
-```
+## See this component in action
 
-### Compiles and hot-reloads for development
-```
-yarn serve
-```
+To see an example of this component in action, run `yarn serve`. This will launch the view in `dev/serve.ts`. Use this for development, too.
 
-### Compiles and minifies for production
-```
-yarn build
-```
+## Use this plugin in other projects
 
-### Lints and fixes files
-```
-yarn lint
-```
+1. To use the Wallscope npm registry in your project, add `@wallscope:registry=https://npm.pkg.github.com/` to your `.npmrc` file.
+2. Authenticate to use the registry with `yarn login --registry=https://npm.pkg.github.com/`. If you have 2FA, `username` is your github username and `password` must be a personal access token. To create one, follow [Github's article "Creating a personal access token"](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token).
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## Deploy
+
+To deploy a new version of this package:
+
+1. `yarn login --registry=https://npm.pkg.github.com/` (if never done it before)
+2. `yarn publish`

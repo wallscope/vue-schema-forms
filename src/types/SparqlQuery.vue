@@ -15,13 +15,13 @@
   button(v-if="size.max > innerValue.length", @click="addField") Add field
 </template>
 <script>
-import Vue from "vue";
-import { codemirror } from "vue-codemirror";
-import { translate } from "sparqlalgebrajs";
+import Vue from 'vue';
+import { codemirror } from 'vue-codemirror';
+import { translate } from 'sparqlalgebrajs';
 // require styles
-import "codemirror/lib/codemirror.css";
-import "codemirror/theme/monokai.css";
-import "codemirror/mode/sparql/sparql"; // explicit import of language mode required for webpack v4+
+import 'codemirror/lib/codemirror.css';
+import 'codemirror/theme/monokai.css';
+import 'codemirror/mode/sparql/sparql'; // explicit import of language mode required for webpack v4+
 
 export default {
   components: {
@@ -30,7 +30,7 @@ export default {
   props: {
     field: { type: Object },
     value: { type: [String, Array] },
-    default: { type: String, default: () => "" },
+    default: { type: String, default: () => '' },
     size: { type: Object },
     validateFn: { type: Function },
   },
@@ -38,7 +38,7 @@ export default {
     let v = this.value;
     if (!this.value || (Array.isArray(this.value) && !this.value.length)) {
       v = this.default;
-      Vue.nextTick(()=> this.emit())
+      Vue.nextTick(() => this.emit());
     }
     v = Array.isArray(v) ? v : [v];
     const end = Math.max(v.length, this.size.min);
@@ -49,8 +49,8 @@ export default {
       sparqlTranslate: translate,
       opts: {
         tabSize: 2,
-        mode: "application/sparql-query",
-        theme: "monokai",
+        mode: 'application/sparql-query',
+        theme: 'monokai',
         lineNumbers: true,
         line: true,
       },
@@ -67,40 +67,54 @@ export default {
       this.emit();
     },
     addField() {
-      this.innerValue.push("");
+      this.innerValue.push('');
     },
     emit() {
       if (this.size.max > 1) {
-        this.$emit("input", this.innerValue);
+        this.$emit('input', this.innerValue);
       } else {
-        this.$emit("input", this.innerValue[0]);
+        this.$emit('input', this.innerValue[0]);
       }
     },
     validate() {
       const component = this;
       const results = this.innerValue.map((v, i) => {
         try {
-          if(typeof this.validateFn === 'function'){
+          if (typeof this.validateFn === 'function') {
             this.validateFn(v, component);
-          }else{
+          } else {
             this.sparqlTranslate(v);
             return true;
           }
         } catch (e) {
-          if(e.message.indexOf("Translate only works on complete query or update objects") > -1){
+          if (
+            e.message.indexOf('Translate only works on complete query or update objects') > -1
+          ) {
             return false;
           }
           const editor = this.$refs[`editor-${i}`].find((x) => !!x);
-          editor.cminstance.addLineClass(e.hash.loc.first_line-1, 'background', 'code-error')
-          setTimeout(([err])=>{
-            editor.cminstance.removeLineClass(err.hash.loc.first_line-1, 'background', 'code-error')
-          },1000,[e])
-          this.$emit('error',{message:e.message,index:i})
+          editor.cminstance.addLineClass(
+            e.hash.loc.first_line - 1,
+            'background',
+            'code-error',
+          );
+          setTimeout(
+            ([err]) => {
+              editor.cminstance.removeLineClass(
+                err.hash.loc.first_line - 1,
+                'background',
+                'code-error',
+              );
+            },
+            1000,
+            [e],
+          );
+          this.$emit('error', { message: e.message, index: i });
           return false;
         }
       });
-      if(this.required && results.every(v => v === false)){
-        this.$emit("error", { message: "This field is required", index: null });
+      if (this.required && results.every((v) => v === false)) {
+        this.$emit('error', { message: 'This field is required', index: null });
       }
       return results;
     },
@@ -110,8 +124,6 @@ export default {
 <style lang="scss" scoped>
 .sparql-query {
   .field {
-    display: grid;
-    grid-template-columns: 3fr 1fr;
     margin: 5px 0;
     column-gap: 20px;
     .delete {

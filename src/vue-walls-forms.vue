@@ -26,7 +26,7 @@
           v-bind="getProps(f)"
         )
   slot(name="submit")
-    button(type="submit", @click.prevent="submit") Submit
+  //-   button(type="submit", @click.prevent="submit") Submit
 </template>
 
 <script>
@@ -51,13 +51,13 @@ function parseSize(s) {
 }
 // TODO: Write spec
 export default {
-  name: "FormBuilder",
+  name: "VueWallsForms",
   props: {
     fields: { type: Array, required: true },
     value: { type: Object, default: () => ({}) },
     requireValidation: { type: Boolean, default: () => true },
     overrides: { type: Object, default: () => ({}) },
-    validate: {type: Object, default: () => ({}) },
+    validate: { type: Object, default: () => ({}) },
     fieldProps: { type: Object, default: () => ({}) },
   },
   data() {
@@ -81,7 +81,7 @@ export default {
         return results;
       });
       // Early return if not all fields pass and validation is required
-      if(this.requireValidation && allFields.some(x => !x)) {
+      if (this.requireValidation && allFields.some((x) => !x)) {
         return;
       }
       // emit value as submit if they all pass

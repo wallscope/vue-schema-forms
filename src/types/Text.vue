@@ -1,11 +1,8 @@
 <template lang="pug">
-.boolean
+.string
   template(v-for="f, idx in innerValue")
     .field
-      select(:value="''+f", @input="input(idx, $event)")
-        option(disabled, value="") -- SELECT --
-        option(value="true") True
-        option(value="false") False
+      input(type="text", @input="input(idx, $event)", :value="f")
       button.delete(
         v-if="size.min < innerValue.length",
         @click="eliminate(idx)"
@@ -13,51 +10,33 @@
   button(v-if="size.max > innerValue.length", @click="addField") Add field
 </template>
 <script>
-import Vue from "vue";
+import Vue from 'vue';
 export default {
   props: {
     field: { type: Object },
-    value: { type: [Boolean, Array] },
-    default: { type: String, default: () => "" },
+    value: { type: [String, Array] },
+    default: { type: String, default: () => '' },
     size: { type: Object },
-    validateFn: {type: Function}
+    validateFn: { type: Function },
   },
   data() {
     let v = this.value;
     if (!this.value || (Array.isArray(this.value) && !this.value.length)) {
       v = this.default;
-      Vue.nextTick(()=> this.emit())
+      Vue.nextTick(() => this.emit());
     }
     v = Array.isArray(v) ? v : [v];
-    v = v.map((x) => ''+x);
     const end = Math.max(v.length, this.size.min);
     while (v.length < end) {
-      v.push(''+this.default);
+      v.push(this.default);
     }
     return {
       innerValue: v,
     };
   },
   methods: {
-    coerce(str) {
-      switch (str) {
-        case "true":
-          return true;
-        case "false":
-          return false;
-        default:
-          return undefined;
-      }
-    },
     input(idx, e) {
-      switch(e.target.value){
-        case "true":
-          Vue.set(this.innerValue, idx, true);
-          break;
-        case "false":
-          Vue.set(this.innerValue, idx, false);
-          break;
-      }
+      Vue.set(this.innerValue, idx, e.target.value);
       this.emit();
     },
     eliminate(idx) {
@@ -65,29 +44,29 @@ export default {
       this.emit();
     },
     addField() {
-      this.innerValue.push(false);
+      this.innerValue.push('');
     },
     emit() {
       if (this.size.max > 1) {
-        this.$emit("input", this.innerValue.filter(x => x !== '').map(x => this.coerce(x)));
+        this.$emit('input', this.innerValue);
       } else {
-        this.$emit("input", this.innerValue.filter(x => x !== '').map(x => this.coerce(x))[0]);
+        this.$emit('input', this.innerValue[0]);
       }
     },
     validate() {
-      if (this.required && this.innerValue.filter(x => x !== '').length < 1 ) {
-        this.$emit("error", { message: "This field is required", index: null });
+      if (this.required && this.innerValue.every((x) => x === '')) {
+        this.$emit('error', { message: 'This field is required', index: null });
         return [false];
       }
       const component = this;
       return this.innerValue.map((v, i) => {
         try {
-          if(typeof this.validateFn === 'function'){
-            return this.validateFn(v,component);
+          if (typeof this.validateFn === 'function') {
+            return this.validateFn(v, component);
           }
           return true;
         } catch (e) {
-          this.$emit('error',{message:e.message, index:i})
+          this.$emit('error', { message: e.message, index: i });
           return false;
         }
       });
@@ -96,7 +75,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.boolean {
+.string {
   .field {
     display: grid;
     grid-template-columns: 3fr 1fr;

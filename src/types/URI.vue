@@ -10,22 +10,20 @@
   button(v-if="size.max > innerValue.length", @click="addField") Add field
 </template>
 <script>
-import Vue from "vue";
-const unixRegex = /^\/$|(^(?=\/)|^\.|^\.\.)(\/(?=[^/\0])[^/\0]+)*\/?$/
-
+import Vue from 'vue';
 export default {
   props: {
     field: { type: Object },
     value: { type: [String, Array] },
-    default: { type: String, default: () => "" },
+    default: { type: String, default: () => '' },
     size: { type: Object },
-    validateFn: {type: Function}
+    validateFn: { type: Function },
   },
   data() {
     let v = this.value;
     if (!this.value || (Array.isArray(this.value) && !this.value.length)) {
       v = this.default;
-      Vue.nextTick(()=> this.emit())
+      Vue.nextTick(() => this.emit());
     }
     v = Array.isArray(v) ? v : [v];
     const end = Math.max(v.length, this.size.min);
@@ -46,33 +44,31 @@ export default {
       this.emit();
     },
     addField() {
-      this.innerValue.push("");
+      this.innerValue.push('');
     },
     emit() {
       if (this.size.max > 1) {
-        this.$emit("input", this.innerValue);
+        this.$emit('input', this.innerValue);
       } else {
-        this.$emit("input", this.innerValue[0]);
+        this.$emit('input', this.innerValue[0]);
       }
     },
     validate() {
-      if (this.required && this.innerValue.every((x) => x === "")) {
-        this.$emit("error", { message: "This field is required", index: null });
+      if (this.required && this.innerValue.every((x) => x === '')) {
+        this.$emit('error', { message: 'This field is required', index: null });
         return [false];
       }
       const component = this;
       return this.innerValue.map((v, i) => {
         try {
-          if(typeof this.validateFn === 'function'){
-            return this.validateFn(v,component);
+          if (typeof this.validateFn === 'function') {
+            return this.validateFn(v, component);
           }
-          if(!v.match(unixRegex)){
-            throw new Error("Invalid Unix Path")
-          }
-          return true
+          new URL(v);
+          return true;
         } catch (e) {
-          this.$emit('error',{message:e.message, index:i})
-          return false
+          this.$emit('error', { message: e.message, index: i });
+          return false;
         }
       });
     },

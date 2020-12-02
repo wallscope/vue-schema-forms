@@ -24,7 +24,7 @@
 
   h2 The normal form
   .ex
-    FormBuilder(
+    vue-walls-forms(
       :fields="example",
       @input="input",
       v-model="ex1",
@@ -40,7 +40,7 @@
   h2 Example form with slot override
   p Replacing 'string' types with a div with red background
   .ex
-    FormBuilder(
+    vue-walls-forms(
       :fields="example",
       @input="input",
       v-model="ex2",
@@ -61,7 +61,7 @@
   h2 Example form with css overrides for a specific component type
   p Overriding css in children components is achieved using the special ::v-deep combinator in css
   .ex.override
-    FormBuilder(
+    vue-walls-forms(
       :fields="example",
       @input="input",
       v-model="ex3",
@@ -77,7 +77,7 @@
   h2 Example form with css overrides for all inputs
   p Overriding css in children components is achieved using the special ::v-deep combinator in css
   .ex.override2
-    FormBuilder(
+    vue-walls-forms(
       :fields="example",
       @input="input",
       v-model="ex4",
@@ -92,7 +92,7 @@
 
   h2 Example form with nested forms
   .ex
-    FormBuilder(
+    vue-walls-forms(
       :fields="nested",
       @input="input",
       v-model="ex5",
@@ -107,7 +107,7 @@
 
   h2 Example form with multiple levels of nesting
   .ex
-    FormBuilder(
+    vue-walls-forms(
       :fields="turtles",
       @input="input",
       v-model="ex6",
@@ -123,7 +123,7 @@
 
 <script>
 import Vue from "vue";
-import FormBuilder from "./components/FormBuilder.vue";
+import VueWallsForms from "../src/vue-walls-forms.vue";
 
 const example = [
   {
@@ -185,7 +185,7 @@ const example = [
 export default {
   name: "App",
   components: {
-    FormBuilder,
+    VueWallsForms,
   },
   data() {
     return {
@@ -272,6 +272,7 @@ export default {
   },
 };
 </script>
+
 <style scoped>
 .ex {
   display: grid;

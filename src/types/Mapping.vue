@@ -11,24 +11,24 @@
   button(v-if="size.max > innerValue.length",@click="addField") Add field
 </template>
 <script>
-import Vue from "vue";
+import Vue from 'vue';
 
 export default {
   props: {
     value: { type: Object, default: () => ({}) },
-    default: { type: String, default: () => "{}" },
+    default: { type: String, default: () => '{}' },
     size: { type: Object },
-    validateFn: {type: Function}
+    validateFn: { type: Function },
   },
   data() {
-    let v = Object.entries(this.value)
-    if(!v.length){
-     v = Object.entries(JSON.parse(this.default))
-     Vue.nextTick(()=> this.emit())
+    let v = Object.entries(this.value);
+    if (!v.length) {
+      v = Object.entries(JSON.parse(this.default));
+      Vue.nextTick(() => this.emit());
     }
-    const end = Math.max(v.length,this.size.min)
-    while(v.length < end){
-      v.push(["",""]);
+    const end = Math.max(v.length, this.size.min);
+    while (v.length < end) {
+      v.push(['', '']);
     }
     return {
       innerValue: v,
@@ -40,7 +40,7 @@ export default {
       this.emit();
     },
     addField() {
-      this.innerValue.push(["", ""]);
+      this.innerValue.push(['', '']);
     },
     eliminate(idx) {
       Vue.delete(this.innerValue, idx);
@@ -48,22 +48,25 @@ export default {
     },
     emit() {
       const clean = this.innerValue.filter((x) => x[0] && x[1]);
-      this.$emit("input", Object.fromEntries(clean));
+      this.$emit('input', Object.fromEntries(clean));
     },
     validate() {
-      if (this.required && Object.entries(this.innerValue).every(([k,v]) => k === '' && v === '')) {
-        this.$emit("error", { message: "This field is required", index: null });
+      if (
+        this.required &&
+        Object.entries(this.innerValue).every(([k, v]) => k === '' && v === '')
+      ) {
+        this.$emit('error', { message: 'This field is required', index: null });
         return [false];
       }
       const component = this;
       return this.innerValue.map((v, i) => {
         try {
-          if(typeof this.validateFn === 'function'){
-            return this.validateFn(v,component);
+          if (typeof this.validateFn === 'function') {
+            return this.validateFn(v, component);
           }
           return true;
         } catch (e) {
-          this.$emit('error',{message:e.message, index:i})
+          this.$emit('error', { message: e.message, index: i });
           return false;
         }
       });
@@ -73,9 +76,10 @@ export default {
 </script>
 <style lang="scss" scoped>
 .mapping {
-  .header, .field {
+  .header,
+  .field {
     display: grid;
-    grid-template-columns: 3fr 3fr 1fr ;
+    grid-template-columns: 3fr 3fr 1fr;
     margin: 5px 0;
     column-gap: 20px;
     .delete {
