@@ -7,7 +7,7 @@ To see an example of this component in action, run `yarn serve`. This will launc
 ## Use this plugin in other projects
 
 1. Install with `yarn add @wallscope/vue-schema-forms`.
-2. Import with `import VueWallsForms from '@wallscope/vue-schema-forms'`.
+2. Import with `import VueSchemaForms from '@wallscope/vue-schema-forms'`.
 
 ## Deploy
 
