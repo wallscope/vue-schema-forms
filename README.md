@@ -1,4 +1,6 @@
-# Vue Walls Forms
+# Vue Schema Forms
+A Vue.js component that automatically generates a Form from a server-side description of the fields. Check the Wiki section for more info.
+
 
 ## See this component in action
 
