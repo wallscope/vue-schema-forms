@@ -1,5 +1,5 @@
 {
-  "name": "@wallscope/vue-walls-forms",
+  "name": "@wallscope/vue-schema-forms",
   "version": "0.10.0",
   "description": "Reusable form component for the Wallscope data schema",
   "main": "dist/vue-walls-forms.ssr.js",
@@ -7,9 +7,6 @@
   "module": "dist/vue-walls-forms.esm.js",
   "unpkg": "dist/vue-walls-forms.min.js",
   "types": "vue-walls-forms.d.ts",
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
-  },
   "files": [
     "dist/*",
     "vue-walls-forms.d.ts",
@@ -20,7 +17,8 @@
     "build": "cross-env NODE_ENV=production rollup --config build/rollup.config.js",
     "build:ssr": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format cjs",
     "build:es": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format es",
-    "build:unpkg": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format iife"
+    "build:unpkg": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format iife",
+    "prepublish": "yarn build"
   },
   "dependencies": {
     "codemirror": "^5.58.3",
