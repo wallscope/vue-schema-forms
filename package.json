@@ -1,6 +1,6 @@
 {
   "name": "@wallscope/vue-schema-forms",
-  "version": "0.10.0",
+  "version": "1.0.0",
   "description": "Reusable form component for the Wallscope data schema",
   "main": "dist/vue-walls-forms.ssr.js",
   "browser": "dist/vue-walls-forms.esm.js",
