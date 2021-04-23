@@ -1,129 +1,135 @@
 <template lang="pug">
 .wrapper
-  h1 Examples:
-  h2 Example fields definition:
-  table
-    tr
-      th name
-      th type
-      th required
-      th size
-      th description
-      th default
-    tr(v-for="f in example")
-      td {{ f.name }}
-      td {{ f.type }}
-      td {{ f.required }}
-      td {{ f.size }}
-      td {{ f.description }}
-      td {{ f.default }}
-  .ex
-    h3 Form
-    h3 Results
-  hr
+  button(@click="hiccup = !hiccup") hiccup conf
+  button(@click="examples = !examples") examples
+  template(v-if="hiccup")
+    Hiccup
+  template(v-if="examples")
+    h1 Examples:
+    h2 Example fields definition:
+    table
+      tr
+        th name
+        th type
+        th required
+        th size
+        th description
+        th default
+      tr(v-for="f in example")
+        td {{ f.name }}
+        td {{ f.type }}
+        td {{ f.required }}
+        td {{ f.size }}
+        td {{ f.description }}
+        td {{ f.default }}
+    .ex
+      h3 Form
+      h3 Results
+    hr
 
-  h2 The normal form
-  .ex
-    vue-walls-forms(
-      :fields="example",
-      @input="input",
-      v-model="ex1",
-      @error="addErr(1, $event)",
-      @submit="submit"
-    )
-    div
-      p Errors
-        p.error(v-for="e, i in errors1", @click="deleteErr(1, i)") {{ e.field }}:{{ e.error.index }} -- {{ e.error.message }}
-      pre {{ JSON.stringify(ex1, null, ' ') }}
-  hr
+    h2 The normal form
+    .ex
+      vue-walls-forms(
+        :fields="example",
+        @input="input",
+        v-model="ex1",
+        @error="addErr(1, $event)",
+        @submit="submit"
+      )
+      div
+        p Errors
+          p.error(v-for="e, i in errors1", @click="deleteErr(1, i)") {{ e.field }}:{{ e.error.index }} -- {{ e.error.message }}
+        pre {{ JSON.stringify(ex1, null, ' ') }}
+    hr
 
-  h2 Example form with slot override
-  p Replacing 'string' types with a div with red background
-  .ex
-    vue-walls-forms(
-      :fields="example",
-      @input="input",
-      v-model="ex2",
-      @error="addErr(2, $event)",
-      @submit="submit"
-    )
-      template(v-slot:string="slotProps")
-        div(
-          style="background:red;",
-          @click="slotProps.input(slotProps.field.name, 'hardcoded change')"
-        ) Click me to change the field value
-    div
-      p Errors
-      p.error(v-for="e, i in errors2", @click="deleteErr(2, i)") {{ e.field }}:{{ e.error.index }} -- {{ e.error.message }}
-      pre {{ JSON.stringify(ex1, null, ' ') }}
-  hr
+    h2 Example form with slot override
+    p Replacing 'string' types with a div with red background
+    .ex
+      vue-walls-forms(
+        :fields="example",
+        @input="input",
+        v-model="ex2",
+        @error="addErr(2, $event)",
+        @submit="submit"
+      )
+        template(v-slot:string="slotProps")
+          div(
+            style="background:red;",
+            @click="slotProps.input(slotProps.field.name, 'hardcoded change')"
+          ) Click me to change the field value
+      div
+        p Errors
+        p.error(v-for="e, i in errors2", @click="deleteErr(2, i)") {{ e.field }}:{{ e.error.index }} -- {{ e.error.message }}
+        pre {{ JSON.stringify(ex1, null, ' ') }}
+    hr
 
-  h2 Example form with css overrides for a specific component type
-  p Overriding css in children components is achieved using the special ::v-deep combinator in css
-  .ex.override
-    vue-walls-forms(
-      :fields="example",
-      @input="input",
-      v-model="ex3",
-      @error="addErr(3, $event)",
-      @submit="submit"
-    )
-    div
-      p Errors
-      p.error(v-for="e, i in errors3", @click="deleteErr(3, i)") {{ e.field }}:{{ e.error.index }} -- {{ e.error.message }}
-      pre {{ JSON.stringify(ex3, null, ' ') }}
-  hr
+    h2 Example form with css overrides for a specific component type
+    p Overriding css in children components is achieved using the special ::v-deep combinator in css
+    .ex.override
+      vue-walls-forms(
+        :fields="example",
+        @input="input",
+        v-model="ex3",
+        @error="addErr(3, $event)",
+        @submit="submit"
+      )
+      div
+        p Errors
+        p.error(v-for="e, i in errors3", @click="deleteErr(3, i)") {{ e.field }}:{{ e.error.index }} -- {{ e.error.message }}
+        pre {{ JSON.stringify(ex3, null, ' ') }}
+    hr
 
-  h2 Example form with css overrides for all inputs
-  p Overriding css in children components is achieved using the special ::v-deep combinator in css
-  .ex.override2
-    vue-walls-forms(
-      :fields="example",
-      @input="input",
-      v-model="ex4",
-      @error="addErr(3, $event)",
-      @submit="submit"
-    )
-    div
-      p Errors
-      p.error(v-for="e, i in errors4", @click="deleteErr(4, i)") {{ e.field }}:{{ e.error.index }} -- {{ e.error.message }}
-      pre {{ JSON.stringify(ex4, null, ' ') }}
-  hr
+    h2 Example form with css overrides for all inputs
+    p Overriding css in children components is achieved using the special ::v-deep combinator in css
+    .ex.override2
+      vue-walls-forms(
+        :fields="example",
+        @input="input",
+        v-model="ex4",
+        @error="addErr(3, $event)",
+        @submit="submit"
+      )
+      div
+        p Errors
+        p.error(v-for="e, i in errors4", @click="deleteErr(4, i)") {{ e.field }}:{{ e.error.index }} -- {{ e.error.message }}
+        pre {{ JSON.stringify(ex4, null, ' ') }}
+    hr
 
-  h2 Example form with nested forms
-  .ex
-    vue-walls-forms(
-      :fields="nested",
-      @input="input",
-      v-model="ex5",
-      @error="addErr(5, $event)",
-      @submit="submit"
-    ) 
-    div
-      p Errors
-      p.error(v-for="e, i in errors5", @click="deleteErr(5, i)") {{ e.field }}:{{ e.error.index }} -- {{ e.error.message }}
-      pre {{ JSON.stringify(ex5, null, ' ') }}
-  hr
+    h2 Example form with nested forms
+    .ex
+      vue-walls-forms(
+        :fields="nested",
+        @input="input",
+        v-model="ex5",
+        @error="addErr(5, $event)",
+        @submit="submit"
+      ) 
+      div
+        p Errors
+        p.error(v-for="e, i in errors5", @click="deleteErr(5, i)") {{ e.field }}:{{ e.error.index }} -- {{ e.error.message }}
+        pre {{ JSON.stringify(ex5, null, ' ') }}
+    hr
 
-  h2 Example form with multiple levels of nesting
-  .ex
-    vue-walls-forms(
-      :fields="turtles",
-      @input="input",
-      v-model="ex6",
-      @error="addErr(6, $event)",
-      @submit="submit"
-    ) 
-    div
-      p Errors
-      p.error(v-for="e, i in errors6", @click="deleteErr(6, i)") {{ e.field }}:{{ e.error.index }} -- {{ e.error.message }}
-      pre {{ JSON.stringify(ex6, null, ' ') }}
-  hr
+    h2 Example form with multiple levels of nesting
+    .ex
+      vue-walls-forms(
+        :fields="turtles",
+        @input="input",
+        v-model="ex6",
+        @error="addErr(6, $event)",
+        @submit="submit"
+      ) 
+      div
+        p Errors
+        p.error(v-for="e, i in errors6", @click="deleteErr(6, i)") {{ e.field }}:{{ e.error.index }} -- {{ e.error.message }}
+        pre {{ JSON.stringify(ex6, null, ' ') }}
+    hr
 </template>
 
 <script>
 import Vue from "vue";
 import VueWallsForms from "../src/vue-walls-forms.vue";
+import Hiccup from "../src/Hiccup.vue";
 
 const example = [
   {
@@ -186,9 +192,12 @@ export default {
   name: "App",
   components: {
     VueWallsForms,
+    Hiccup
   },
   data() {
     return {
+      examples: false,
+      hiccup: true,
       example,
       nested: [
         {
