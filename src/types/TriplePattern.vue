@@ -6,9 +6,9 @@
     p Object
   template(v-for="t, idx in innerValue")
     .field
-      input(type="text", @input="input(idx, 's', $event)")
-      input(type="text", @input="input(idx, 'p', $event)")
-      input(type="text", @input="input(idx, 'o', $event)")
+      input(type="text", @input="input(idx, 's', $event)", :value="t.s")
+      input(type="text", @input="input(idx, 'p', $event)", :value="t.p")
+      input(type="text", @input="input(idx, 'o', $event)", :value="t.o")
       button.delete(v-if="size.min < innerValue.length", @click="eliminate(idx)") Delete
   button(v-if="size.max > innerValue.length", @click="addField") Add field
 </template>
